@@ -1,31 +1,65 @@
-logo = ''' 
-░██████╗░░█████╗░  ██████╗░██╗██████╗░███████╗██████╗░
-██╔════╝░██╔══██╗  ██╔══██╗██║██╔══██╗██╔════╝██╔══██╗
-██║░░██╗░██║░░██║  ██████╔╝██║██║░░██║█████╗░░██████╔╝
-██║░░╚██╗██║░░██║  ██╔══██╗██║██║░░██║██╔══╝░░██╔══██╗
-╚██████╔╝╚█████╔╝  ██║░░██║██║██████╔╝███████╗██║░░██║
-░╚═════╝░░╚════╝░  ╚═╝░░╚═╝╚═╝╚═════╝░╚══════╝╚═╝░░╚═╝'''
+# logo = ''' 
+# ░██████╗░░█████╗░  ██████╗░██╗██████╗░███████╗██████╗░
+# ██╔════╝░██╔══██╗  ██╔══██╗██║██╔══██╗██╔════╝██╔══██╗
+# ██║░░██╗░██║░░██║  ██████╔╝██║██║░░██║█████╗░░██████╔╝
+# ██║░░╚██╗██║░░██║  ██╔══██╗██║██║░░██║██╔══╝░░██╔══██╗
+# ╚██████╔╝╚█████╔╝  ██║░░██║██║██████╔╝███████╗██║░░██║
+# ░╚═════╝░░╚════╝░  ╚═╝░░╚═╝╚═╝╚═════╝░╚══════╝╚═╝░░╚═╝'''
 
-print(logo)
-driver_records=[]
-passenger_record=[]
+# print(logo)
+# driver_records=[]
+# passenger_record=[]
+import MySQLdb
+from MySQLdb import Error
+
+# Database connection details
+my_conn = {
+    "host": "e3bc9e1a0b71.601a9382.alu-cod.online",
+    "user": "Jonathan2005",
+    "port": 38775,
+    "password": "Munyeshuri@2005",
+    "database": "myride"
+}
+
+connection = MySQLdb.connect(
+                host=my_conn["host"],
+                user=my_conn["user"],
+                passwd=my_conn["password"],
+                db=my_conn["database"],
+                port=my_conn["port"]
+            )
 
 def add_driver():
     print("Ok Enter your cridentioals to register")
-    driver_data={}
+    # driver_data={}
     driverregname = input("Enter your name: ")
     driverregpho = int(input("Enter your phone number: "))
-    drivercarsits = int(input("Enter your sits of car: "))
+    # drivercarsits = int(input("Enter your sits of car: "))
     driverregpass = input("Enter your password: ")
-    driver_data["name"] = driverregname
-    driver_data["phone"] = driverregpho
-    driver_data["car_sits"] =drivercarsits
-    driver_data["password"] = driverregpass
+    # driver_data["name"] = driverregname
+    # driver_data["phone"] = driverregpho
+    # driver_data["car_sits"] =drivercarsits
+    # driver_data["password"] = driverregpass
             
-    driver_records.append(driver_data)
+    # driver_records.append(driver_data)
     # print(driver_data)
-    print("Driver Registered Successfully")
-    
+    try:
+            
+        cursor = connection.cursor()
+        insert_query = """
+        INSERT INTO driver(`driver_name`, `driver_phn_nmb`,`driver_pass`)
+        VALUES (%s, %s, %s)
+        """
+        cursor.execute(insert_query, (driverregname, driverregpho,driverregpass))
+        connection.commit()
+        print(f"Driver {driverregname} registered Successfully")
+    except Error as e:
+        print(f"Error connecting: {e}")
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
 
 
 def get_passenger_info():
